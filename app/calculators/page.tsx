@@ -1,66 +1,9 @@
 'use client';
-
+import './calculator-studio.css';
 import { useMemo, useState } from 'react';
 import { ArrowLeft, Calculator, Percent, TrendingUp, Landmark, ReceiptText, PiggyBank } from 'lucide-react';
 import { calculateCAGR, calculateCompound, calculateDiscount, calculateEMI, calculateInflation, calculateLumpsum, calculateMargin, calculateMarkup, calculateROI, calculateSimpleInterest, calculateSIP, addTax, removeTax } from '@/lib/calculations';
 import { countries, taxData, CountryCode } from '@/lib/data';
-
-const groups = [
-  { name: 'Loans', icon: Landmark, tools: ['EMI Calculator', 'Loan Payment', 'Amortization'] },
-  { name: 'Investments', icon: TrendingUp, tools: ['SIP Calculator', 'Lumpsum', 'Compound Interest', 'Simple Interest', 'CAGR'] },
-  { name: 'Tax', icon: ReceiptText, tools: ['GST / VAT', 'Tax Inclusive / Exclusive'] },
-  { name: 'Business', icon: Percent, tools: ['ROI', 'Profit Margin', 'Markup', 'Discount'] },
-  { name: 'Planning', icon: PiggyBank, tools: ['Inflation'] },
-];
-
-function money(value:number, currency:string) { return new Intl.NumberFormat(undefined, { style:'currency', currency, maximumFractionDigits:0 }).format(Number.isFinite(value) ? value : 0); }
-
-export default function CalculatorsPage() {
-  const [tool, setTool] = useState('EMI Calculator');
-  const [country, setCountry] = useState<CountryCode>('IN');
-  const [a, setA] = useState(1000000);
-  const [b, setB] = useState(8.5);
-  const [c, setC] = useState(20);
-  const meta = countries.find(x => x.code === country)!;
-  const tax = taxData[country].standardIndirect;
-
-  const result = useMemo(() => {
-    switch (tool) {
-      case 'SIP Calculator': return calculateSIP(a, b, c);
-      case 'Lumpsum': return calculateLumpsum(a, b, c);
-      case 'Compound Interest': return calculateCompound(a, b, c);
-      case 'Simple Interest': return calculateSimpleInterest(a, b, c);
-      case 'CAGR': return { value: calculateCAGR(a, b, c) };
-      case 'GST / VAT': return addTax(a, tax);
-      case 'Tax Inclusive / Exclusive': return removeTax(a, tax);
-      case 'ROI': return { value: calculateROI(a, b) };
-      case 'Profit Margin': return { value: calculateMargin(a, b) };
-      case 'Markup': return { value: calculateMarkup(a, b) };
-      case 'Discount': return calculateDiscount(a, b);
-      case 'Inflation': return { value: calculateInflation(a, b, c) };
-      default: return { value: calculateEMI(a, b, c) };
-    }
-  }, [tool, country, a, b, c, tax]);
-
-  const pctTool = ['CAGR', 'ROI', 'Profit Margin', 'Markup'];
-  const simpleValue = 'value' in result ? result.value : ('total' in result ? result.total : ('finalPrice' in result ? result.finalPrice : ('net' in result ? result.net : 0)));
-
-  return <main className="calculator-page">
-    <header className="calculator-header"><a href="/Finance-Calculator/" className="back"><ArrowLeft size={17}/> FinCalc</a><span>Calculator Studio</span></header>
-    <div className="calculator-layout">
-      <aside className="calculator-sidebar"><div className="side-title"><Calculator size={18}/> Tools</div>{groups.map(g => { const I=g.icon; return <div key={g.name} className="tool-group"><div className="group-name"><I size={15}/>{g.name}</div>{g.tools.map(x => <button key={x} className={tool===x?'tool-select active':'tool-select'} onClick={()=>setTool(x)}>{x}</button>)}</div> })}</aside>
-      <section className="calculator-workspace">
-        <div className="workspace-top"><div><span className="eyebrow">CALCULATOR</span><h1>{tool}</h1><p>Change the inputs to model a real scenario. Results update instantly.</p></div><select value={country} onChange={e=>setCountry(e.target.value as CountryCode)}>{countries.map(x=><option key={x.code} value={x.code}>{x.flag} {x.name} — {x.currency}</option>)}</select></div>
-        <div className="calculator-card">
-          <div className="inputs">
-            <label>{tool === 'CAGR' ? 'Initial value' : tool === 'ROI' || tool === 'Profit Margin' || tool === 'Markup' ? 'Cost / base amount' : 'Amount'}<input type="number" value={a} onChange={e=>setA(Math.max(0,+e.target.value))}/></label>
-            <label>{pctTool.includes(tool) ? (tool === 'CAGR' ? 'Final value' : 'Return / selling / revenue') : tool.includes('Tax') || tool === 'GST / VAT' ? 'Tax rate' : 'Annual rate'}<input type="number" step="0.1" value={b} onChange={e=>setB(Math.max(0,+e.target.value))}/></label>
-            {!pctTool.includes(tool) && tool !== 'GST / VAT' && tool !== 'Tax Inclusive / Exclusive' && <label>Time period (years)<input type="number" value={c} onChange={e=>setC(Math.max(1,+e.target.value))}/></label>}
-          </div>
-          <div className="primary-result"><span>ESTIMATED RESULT</span><strong>{pctTool.includes(tool) ? `${Number(simpleValue).toFixed(2)}%` : money(Number(simpleValue), meta.currency)}</strong>{'invested' in result && <div className="result-mini"><span>Invested {money(result.invested,meta.currency)}</span><span>Returns {money(result.returns,meta.currency)}</span></div>}{'tax' in result && <div className="result-mini"><span>Tax {money(result.tax,meta.currency)}</span><span>Total {money(result.total,meta.currency)}</span></div>}</div>
-          <div className="assumptions"><b>About this calculation</b><p>Uses a transparent mathematical model. Tax rates shown here are reference defaults and can differ by jurisdiction, product, taxpayer status, exemptions and filing year. Always verify tax treatment with the applicable official authority.</p></div>
-        </div>
-      </section>
-    </div>
-  </main>;
-}
+const groups=[{name:'Loans',icon:Landmark,tools:['EMI Calculator','Loan Payment','Amortization']},{name:'Investments',icon:TrendingUp,tools:['SIP Calculator','Lumpsum','Compound Interest','Simple Interest','CAGR']},{name:'Tax',icon:ReceiptText,tools:['GST / VAT','Tax Inclusive / Exclusive']},{name:'Business',icon:Percent,tools:['ROI','Profit Margin','Markup','Discount']},{name:'Planning',icon:PiggyBank,tools:['Inflation']}];
+function money(v:number,c:string){return new Intl.NumberFormat(undefined,{style:'currency',currency:c,maximumFractionDigits:0}).format(Number.isFinite(v)?v:0)}
+export default function CalculatorsPage(){const[tool,setTool]=useState('EMI Calculator');const[country,setCountry]=useState<CountryCode>('IN');const[a,setA]=useState(1000000);const[b,setB]=useState(8.5);const[c,setC]=useState(20);const meta=countries.find(x=>x.code===country)!;const tax=taxData[country].standardIndirect;const result=useMemo(()=>{switch(tool){case'SIP Calculator':return calculateSIP(a,b,c);case'Lumpsum':return calculateLumpsum(a,b,c);case'Compound Interest':return calculateCompound(a,b,c);case'Simple Interest':return calculateSimpleInterest(a,b,c);case'CAGR':return{value:calculateCAGR(a,b,c)};case'GST / VAT':return addTax(a,b);case'Tax Inclusive / Exclusive':return removeTax(a,b);case'ROI':return{value:calculateROI(a,b)};case'Profit Margin':return{value:calculateMargin(a,b)};case'Markup':return{value:calculateMarkup(a,b)};case'Discount':return calculateDiscount(a,b);case'Inflation':return{value:calculateInflation(a,b,c)};default:return{value:calculateEMI(a,b,c)}}},[tool,country,a,b,c,tax]);const percent=['CAGR','ROI','Profit Margin','Markup'].includes(tool);const resultValue='value'in result?result.value:'total'in result?result.total:'finalPrice'in result?result.finalPrice:'net'in result?result.net:0;return <main className="calculator-page"><header className="calculator-header"><a href="/Finance-Calculator/" className="back"><ArrowLeft size={17}/> FinCalc</a><span>Calculator Studio</span></header><div className="calculator-layout"><aside className="calculator-sidebar"><div className="side-title"><Calculator size={18}/> Tools</div>{groups.map(g=>{const I=g.icon;return <div key={g.name} className="tool-group"><div className="group-name"><I size={15}/>{g.name}</div>{g.tools.map(x=><button key={x} className={tool===x?'tool-select active':'tool-select'} onClick={()=>setTool(x)}>{x}</button>)}</div>})}</aside><section className="calculator-workspace"><div className="workspace-top"><div><span className="eyebrow">CALCULATOR</span><h1>{tool}</h1><p>Change the inputs to model a real scenario. Results update instantly.</p></div><select value={country} onChange={e=>setCountry(e.target.value as CountryCode)}>{countries.map(x=><option key={x.code} value={x.code}>{x.flag} {x.name} — {x.currency}</option>)}</select></div><div className="calculator-card"><div className="inputs"><label>{tool==='CAGR'?'Initial value':tool==='ROI'||tool==='Profit Margin'||tool==='Markup'?'Cost / base amount':'Amount'}<input type="number" value={a} onChange={e=>setA(Math.max(0,+e.target.value))}/></label><label>{percent&&tool==='CAGR'?'Final value':percent?'Return / selling / revenue':tool.includes('Tax')||tool==='GST / VAT'?'Tax rate':'Annual rate'}<input type="number" step="0.1" value={b} onChange={e=>setB(Math.max(0,+e.target.value))}/></label>{!percent&&!tool.includes('Tax')&&tool!=='GST / VAT'&&<label>Time period (years)<input type="number" value={c} onChange={e=>setC(Math.max(1,+e.target.value))}/></label>}</div><div className="primary-result"><span>ESTIMATED RESULT</span><strong>{percent?`${Number(resultValue).toFixed(2)}%`:money(Number(resultValue),meta.currency)}</strong>{'invested'in result&&<div className="result-mini"><span>Invested {money(result.invested,meta.currency)}</span><span>Returns {money(result.returns,meta.currency)}</span></div>}{'tax'in result&&<div className="result-mini"><span>Tax {money(result.tax,meta.currency)}</span><span>Total {money(result.total,meta.currency)}</span></div>}</div><div className="assumptions"><b>About this calculation</b><p>Uses a transparent mathematical model. Tax rates are reference defaults and can differ by jurisdiction, product, taxpayer status, exemptions and filing year. Verify tax treatment with the applicable official authority.</p></div></div></section></div></main>}
