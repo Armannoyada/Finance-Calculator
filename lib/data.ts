@@ -25,34 +25,37 @@ export const countries = [
   { code: 'MY', name: 'Malaysia', currency: 'MYR', flag: '🇲🇾' },
 ] as const;
 
+type IncomeBracket = readonly [number, number, number];
+const emptyIncomeBrackets: IncomeBracket[] = [];
+
 // Reference defaults only. Indirect tax can depend on product, province/state,
 // taxpayer status and filing period; unsupported jurisdictions intentionally use 0
 // here so the UI displays “—” instead of implying a verified tax rate.
 export const taxData = {
-  IN: { indirectName: 'GST', standardIndirect: 18, incomeBrackets: [] },
-  US: { indirectName: 'Sales Tax', standardIndirect: 0, incomeBrackets: [] },
-  GB: { indirectName: 'VAT', standardIndirect: 20, incomeBrackets: [] },
-  CA: { indirectName: 'GST/HST', standardIndirect: 5, incomeBrackets: [] },
-  AU: { indirectName: 'GST', standardIndirect: 10, incomeBrackets: [] },
-  NZ: { indirectName: 'GST', standardIndirect: 15, incomeBrackets: [] },
-  SG: { indirectName: 'GST', standardIndirect: 9, incomeBrackets: [] },
-  AE: { indirectName: 'VAT', standardIndirect: 5, incomeBrackets: [] },
-  SA: { indirectName: 'VAT', standardIndirect: 15, incomeBrackets: [] },
-  ZA: { indirectName: 'VAT', standardIndirect: 15, incomeBrackets: [] },
-  DE: { indirectName: 'VAT', standardIndirect: 19, incomeBrackets: [] },
-  FR: { indirectName: 'VAT', standardIndirect: 20, incomeBrackets: [] },
-  IT: { indirectName: 'VAT', standardIndirect: 22, incomeBrackets: [] },
-  ES: { indirectName: 'VAT', standardIndirect: 21, incomeBrackets: [] },
-  NL: { indirectName: 'VAT', standardIndirect: 21, incomeBrackets: [] },
-  CH: { indirectName: 'VAT', standardIndirect: 8.1, incomeBrackets: [] },
-  NO: { indirectName: 'VAT', standardIndirect: 25, incomeBrackets: [] },
-  SE: { indirectName: 'VAT', standardIndirect: 25, incomeBrackets: [] },
-  JP: { indirectName: 'Consumption Tax', standardIndirect: 10, incomeBrackets: [] },
-  KR: { indirectName: 'VAT', standardIndirect: 10, incomeBrackets: [] },
-  MX: { indirectName: 'VAT', standardIndirect: 16, incomeBrackets: [] },
-  BR: { indirectName: 'Consumption taxes', standardIndirect: 0, incomeBrackets: [] },
-  HK: { indirectName: 'No broad VAT/GST', standardIndirect: 0, incomeBrackets: [] },
-  MY: { indirectName: 'SST', standardIndirect: 0, incomeBrackets: [] },
+  IN: { indirectName: 'GST', standardIndirect: 18, incomeBrackets: emptyIncomeBrackets },
+  US: { indirectName: 'Sales Tax', standardIndirect: 0, incomeBrackets: emptyIncomeBrackets },
+  GB: { indirectName: 'VAT', standardIndirect: 20, incomeBrackets: emptyIncomeBrackets },
+  CA: { indirectName: 'GST/HST', standardIndirect: 5, incomeBrackets: emptyIncomeBrackets },
+  AU: { indirectName: 'GST', standardIndirect: 10, incomeBrackets: emptyIncomeBrackets },
+  NZ: { indirectName: 'GST', standardIndirect: 15, incomeBrackets: emptyIncomeBrackets },
+  SG: { indirectName: 'GST', standardIndirect: 9, incomeBrackets: emptyIncomeBrackets },
+  AE: { indirectName: 'VAT', standardIndirect: 5, incomeBrackets: emptyIncomeBrackets },
+  SA: { indirectName: 'VAT', standardIndirect: 15, incomeBrackets: emptyIncomeBrackets },
+  ZA: { indirectName: 'VAT', standardIndirect: 15, incomeBrackets: emptyIncomeBrackets },
+  DE: { indirectName: 'VAT', standardIndirect: 19, incomeBrackets: emptyIncomeBrackets },
+  FR: { indirectName: 'VAT', standardIndirect: 20, incomeBrackets: emptyIncomeBrackets },
+  IT: { indirectName: 'VAT', standardIndirect: 22, incomeBrackets: emptyIncomeBrackets },
+  ES: { indirectName: 'VAT', standardIndirect: 21, incomeBrackets: emptyIncomeBrackets },
+  NL: { indirectName: 'VAT', standardIndirect: 21, incomeBrackets: emptyIncomeBrackets },
+  CH: { indirectName: 'VAT', standardIndirect: 8.1, incomeBrackets: emptyIncomeBrackets },
+  NO: { indirectName: 'VAT', standardIndirect: 25, incomeBrackets: emptyIncomeBrackets },
+  SE: { indirectName: 'VAT', standardIndirect: 25, incomeBrackets: emptyIncomeBrackets },
+  JP: { indirectName: 'Consumption Tax', standardIndirect: 10, incomeBrackets: emptyIncomeBrackets },
+  KR: { indirectName: 'VAT', standardIndirect: 10, incomeBrackets: emptyIncomeBrackets },
+  MX: { indirectName: 'VAT', standardIndirect: 16, incomeBrackets: emptyIncomeBrackets },
+  BR: { indirectName: 'Consumption taxes', standardIndirect: 0, incomeBrackets: emptyIncomeBrackets },
+  HK: { indirectName: 'No broad VAT/GST', standardIndirect: 0, incomeBrackets: emptyIncomeBrackets },
+  MY: { indirectName: 'SST', standardIndirect: 0, incomeBrackets: emptyIncomeBrackets },
 } as const;
 
 export type CountryCode = keyof typeof taxData;
