@@ -4,6 +4,57 @@ import { useMemo, useState } from 'react';
 import { Calculator, ChevronDown, ArrowRight, TrendingUp, ReceiptText, Landmark, PiggyBank, Percent, Menu, X } from 'lucide-react';
 import { countries, taxData, CountryCode } from '@/lib/data';
 
+const toolHref: Record<string, string> = {
+  'EMI Calculator': '/Finance-Calculator/calculators/emi-calculator/',
+  'Loan Payment Calculator': '/Finance-Calculator/calculators/loan-payment/',
+  'Amortization Calculator': '/Finance-Calculator/calculators/amortization-calculator/',
+  'Loan Comparison': '/Finance-Calculator/calculators/loan-comparison/',
+  'Personal Loan': '/Finance-Calculator/calculators/loan-payment/',
+  'Home Loan': '/Finance-Calculator/calculators/loan-payment/',
+  'Car Loan': '/Finance-Calculator/calculators/loan-payment/',
+  'Education Loan': '/Finance-Calculator/calculators/loan-payment/',
+  'SIP Calculator': '/Finance-Calculator/calculators/sip-calculator/',
+  'Lumpsum Calculator': '/Finance-Calculator/calculators/lumpsum-calculator/',
+  'Compound Interest': '/Finance-Calculator/calculators/compound-interest-calculator/',
+  'Simple Interest': '/Finance-Calculator/calculators/simple-interest-calculator/',
+  'CAGR Calculator': '/Finance-Calculator/calculators/cagr-calculator/',
+  'XIRR Calculator': '/Finance-Calculator/calculators/cagr-calculator/',
+  'SWP Calculator': '/Finance-Calculator/calculators/swp-calculator/',
+  'Goal Planner': '/Finance-Calculator/calculators/sip-goal-calculator/',
+  'Income Tax': '/Finance-Calculator/calculators/gst-vat-calculator/',
+  'GST Calculator': '/Finance-Calculator/calculators/gst-vat-calculator/',
+  'VAT Calculator': '/Finance-Calculator/calculators/gst-vat-calculator/',
+  'Sales Tax Calculator': '/Finance-Calculator/calculators/gst-vat-calculator/',
+  'Capital Gains': '/Finance-Calculator/calculators/tax-inclusive-exclusive-calculator/',
+  'Tax-inclusive Price': '/Finance-Calculator/calculators/tax-inclusive-exclusive-calculator/',
+  'Tax-exclusive Price': '/Finance-Calculator/calculators/tax-inclusive-exclusive-calculator/',
+  'Salary Tax': '/Finance-Calculator/calculators/gst-vat-calculator/',
+  'Savings Goal': '/Finance-Calculator/calculators/savings-goal-calculator/',
+  'Retirement Planner': '/Finance-Calculator/calculators/savings-goal-calculator/',
+  'Inflation Calculator': '/Finance-Calculator/calculators/inflation-calculator/',
+  'Emergency Fund': '/Finance-Calculator/calculators/savings-goal-calculator/',
+  'Net Worth': '/Finance-Calculator/calculators/savings-goal-calculator/',
+  'Debt Payoff': '/Finance-Calculator/calculators/debt-payoff-calculator/',
+  'Budget Planner': '/Finance-Calculator/calculators/savings-goal-calculator/',
+  'Currency Converter': '/Finance-Calculator/calculators/percentage-calculator/',
+  'Profit Margin': '/Finance-Calculator/calculators/profit-margin-calculator/',
+  'Markup Calculator': '/Finance-Calculator/calculators/markup-calculator/',
+  'Break-even': '/Finance-Calculator/calculators/break-even-calculator/',
+  'ROI Calculator': '/Finance-Calculator/calculators/roi-calculator/',
+  'Discount Calculator': '/Finance-Calculator/calculators/discount-calculator/',
+  'Cash Flow': '/Finance-Calculator/calculators/savings-goal-calculator/',
+  'Invoice Calculator': '/Finance-Calculator/calculators/tax-inclusive-exclusive-calculator/',
+  'Depreciation': '/Finance-Calculator/calculators/compound-interest-calculator/',
+  'Percentage': '/Finance-Calculator/calculators/percentage-calculator/',
+  'Percentage Change': '/Finance-Calculator/calculators/percentage-change-calculator/',
+  'Ratio': '/Finance-Calculator/calculators/percentage-calculator/',
+  'Tip Calculator': '/Finance-Calculator/calculators/tip-calculator/',
+  'Unit Price': '/Finance-Calculator/calculators/percentage-calculator/',
+  'Date Difference': '/Finance-Calculator/calculators/percentage-calculator/',
+  'Time Value of Money': '/Finance-Calculator/calculators/compound-interest-calculator/',
+  'Rule of 72': '/Finance-Calculator/calculators/rule-of-72-calculator/',
+};
+
 const tools = [
   { title: 'Loans & EMIs', icon: Landmark, items: ['EMI Calculator','Loan Payment Calculator','Amortization Calculator','Loan Comparison','Personal Loan','Home Loan','Car Loan','Education Loan'] },
   { title: 'Investments', icon: TrendingUp, items: ['SIP Calculator','Lumpsum Calculator','Compound Interest','Simple Interest','CAGR Calculator','XIRR Calculator','SWP Calculator','Goal Planner'] },
@@ -12,19 +63,20 @@ const tools = [
   { title: 'Business & Finance', icon: Percent, items: ['Profit Margin','Markup Calculator','Break-even','ROI Calculator','Discount Calculator','Cash Flow','Invoice Calculator','Depreciation'] },
   { title: 'Everyday Math', icon: Calculator, items: ['Percentage','Percentage Change','Ratio','Tip Calculator','Unit Price','Date Difference','Time Value of Money','Rule of 72'] },
 ];
+function hrefFor(label: string) { return toolHref[label] || '/Finance-Calculator/calculators/'; }
 function emi(principal:number, annual:number, years:number) { const r=annual/12/100,n=years*12; return r ? principal*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1) : principal/n; }
 function format(n:number,currency:string) { return new Intl.NumberFormat(undefined,{style:'currency',currency,maximumFractionDigits:0}).format(Number.isFinite(n)?n:0); }
 export default function Home(){
  const [country,setCountry]=useState<CountryCode>('IN'); const [mobile,setMobile]=useState(false); const [amount,setAmount]=useState(1000000); const [rate,setRate]=useState(8.5); const [years,setYears]=useState(20); const [taxMode,setTaxMode]=useState<'add'|'remove'>('add');
  const c=taxData[country]; const meta=countries.find(x=>x.code===country)!; const monthly=useMemo(()=>emi(amount,rate,years),[amount,rate,years]); const total=monthly*years*12; const interest=total-amount;
  return <main className="site">
-  <header className="nav"><a className="brand" href="#">FinCalc</a><nav className={mobile?'open':''}><a href="#calculators">Calculators</a><a href="#countries">Countries</a><a href="#taxes">Taxes</a><a href="#learn">Guides</a></nav><div className="nav-actions"><button className="country-pill" onClick={()=>document.getElementById('countries')?.scrollIntoView({behavior:'smooth'})}>{meta.flag} {meta.code}<ChevronDown size={15}/></button><a className="country-pill" href="/Finance-Calculator/calculators">Open calculator studio</a><button className="menu" onClick={()=>setMobile(!mobile)}>{mobile?<X/>:<Menu/>}</button></div></header>
-  <section className="hero"><div className="hero-copy"><span className="eyebrow">FINANCIAL TOOLS, WITHOUT THE NOISE</span><h1>Make better money decisions with <em>clear numbers.</em></h1><p>Loans, investments, taxes, savings and business finance — practical calculators built around the way people actually manage money.</p><div className="hero-buttons"><a className="primary" href="/Finance-Calculator/calculators">Explore calculators <ArrowRight size={17}/></a><a className="text-link" href="#taxes">Browse tax tools</a></div></div><div className="hero-calc"><div className="calc-head"><span>Quick EMI estimate</span><span className="live">● Live</span></div><label>Loan amount <strong>{format(amount,meta.currency)}</strong></label><input type="range" min="50000" max="10000000" step="50000" value={amount} onChange={e=>setAmount(+e.target.value)}/><label>Interest rate <strong>{rate}%</strong></label><input type="range" min="1" max="25" step="0.1" value={rate} onChange={e=>setRate(+e.target.value)}/><label>Tenure <strong>{years} years</strong></label><input type="range" min="1" max="30" value={years} onChange={e=>setYears(+e.target.value)}/><div className="result"><small>ESTIMATED MONTHLY PAYMENT</small><b>{format(monthly,meta.currency)}</b><div><span>Total interest {format(interest,meta.currency)}</span><span>Total paid {format(total,meta.currency)}</span></div></div></div></section>
+  <header className="nav"><a className="brand" href="/Finance-Calculator/">FinCalc</a><nav className={mobile?'open':''}><a href="#calculators">Calculators</a><a href="#countries">Countries</a><a href="#taxes">Taxes</a><a href="#learn">Guides</a></nav><div className="nav-actions"><button className="country-pill" onClick={()=>document.getElementById('countries')?.scrollIntoView({behavior:'smooth'})}>{meta.flag} {meta.code}<ChevronDown size={15}/></button><a className="country-pill" href="/Finance-Calculator/calculators/">Open calculator studio</a><button className="menu" onClick={()=>setMobile(!mobile)}>{mobile?<X/>:<Menu/>}</button></div></header>
+  <section className="hero"><div className="hero-copy"><span className="eyebrow">FINANCIAL TOOLS, WITHOUT THE NOISE</span><h1>Make better money decisions with <em>clear numbers.</em></h1><p>Loans, investments, taxes, savings and business finance — practical calculators built around the way people actually manage money.</p><div className="hero-buttons"><a className="primary" href="/Finance-Calculator/calculators/">Explore calculators <ArrowRight size={17}/></a><a className="text-link" href="#taxes">Browse tax tools</a></div></div><div className="hero-calc"><div className="calc-head"><span>Quick EMI estimate</span><span className="live">● Live</span></div><label>Loan amount <strong>{format(amount,meta.currency)}</strong></label><input type="range" min="50000" max="10000000" step="50000" value={amount} onChange={e=>setAmount(+e.target.value)}/><label>Interest rate <strong>{rate}%</strong></label><input type="range" min="1" max="25" step="0.1" value={rate} onChange={e=>setRate(+e.target.value)}/><label>Tenure <strong>{years} years</strong></label><input type="range" min="1" max="30" value={years} onChange={e=>setYears(+e.target.value)}/><div className="result"><small>ESTIMATED MONTHLY PAYMENT</small><b>{format(monthly,meta.currency)}</b><div><span>Total interest {format(interest,meta.currency)}</span><span>Total paid {format(total,meta.currency)}</span></div></div></div></section>
   <section className="trust"><span>Built for everyday decisions</span><i/> <span>Country-aware tax tools</span><i/> <span>Transparent formulas</span><i/> <span>No account required</span></section>
-  <section id="calculators" className="section"><div className="section-title"><div><span className="eyebrow">THE TOOLBOX</span><h2>Everything you need to calculate the cost.</h2></div><p>Start with a category or open the calculator studio for interactive tools. Every result shows the inputs, formula and key assumptions.</p></div><div className="tool-grid">{tools.map(t=>{const I=t.icon;return <article className="tool-card" key={t.title}><div className="tool-icon"><I size={19}/></div><h3>{t.title}</h3><ul>{t.items.map(x=><li key={x}><a href="/Finance-Calculator/calculators">{x}<ArrowRight size={14}/></a></li>)}</ul><a className="view-all" href="/Finance-Calculator/calculators">View all <ArrowRight size={14}/></a></article>})}</div></section>
+  <section id="calculators" className="section"><div className="section-title"><div><span className="eyebrow">THE TOOLBOX</span><h2>Everything you need to calculate the cost.</h2></div><p>Start with a category or open the calculator studio for interactive tools. Every result shows the inputs, formula and key assumptions.</p></div><div className="tool-grid">{tools.map(t=>{const I=t.icon;return <article className="tool-card" key={t.title}><div className="tool-icon"><I size={19}/></div><h3>{t.title}</h3><ul>{t.items.map(x=><li key={x}><a href={hrefFor(x)}>{x}<ArrowRight size={14}/></a></li>)}</ul><a className="view-all" href="/Finance-Calculator/calculators/">View all <ArrowRight size={14}/></a></article>})}</div></section>
   <section id="countries" className="country-section"><div className="section-title"><div><span className="eyebrow">COUNTRY MODE</span><h2>Finance changes by country. Your tools should too.</h2></div><p>Choose a market to surface the relevant currency and tax terminology. Rates are stored separately from calculation logic so they can be updated without rebuilding the app.</p></div><div className="country-grid">{countries.map(x=><button className={country===x.code?'country active':'country'} key={x.code} onClick={()=>setCountry(x.code)}><span>{x.flag}</span><div><b>{x.name}</b><small>{x.currency} · {taxData[x.code].indirectName}</small></div><ArrowRight size={15}/></button>)}</div></section>
   <section id="taxes" className="tax-section"><div className="tax-copy"><span className="eyebrow">TAX CALCULATOR</span><h2>Put tax into the number, not after it.</h2><p>Quickly add or remove {c.indirectName} for <b>{meta.name}</b>. For production use, each jurisdiction should use an official rate dataset and distinguish standard, reduced, zero-rated and exempt supplies.</p><div className="switch"><button className={taxMode==='add'?'sel':''} onClick={()=>setTaxMode('add')}>Add tax</button><button className={taxMode==='remove'?'sel':''} onClick={()=>setTaxMode('remove')}>Remove tax</button></div></div><div className="tax-card"><div className="tax-top"><span>Base amount</span><b>{format(100000,meta.currency)}</b></div><div className="tax-rate"><span>{c.indirectName} rate</span><strong>{c.standardIndirect}%</strong></div><div className="tax-total"><small>{taxMode==='add'?'PRICE INCLUDING TAX':'TAX EXCLUSIVE AMOUNT'}</small><b>{format(taxMode==='add'?100000*(1+c.standardIndirect/100):100000/(1+c.standardIndirect/100),meta.currency)}</b></div><p>Illustrative standard rate. Actual tax treatment depends on product, location and taxpayer status.</p></div></section>
   <section id="learn" className="learn"><div><span className="eyebrow">HOW IT WORKS</span><h2>Useful enough to trust. Simple enough to use.</h2></div><div className="steps"><div><b>01</b><h3>Choose your context</h3><p>Country, currency, tax regime or investment type comes first.</p></div><div><b>02</b><h3>Enter real numbers</h3><p>Sliders and focused inputs make scenarios quick to compare.</p></div><div><b>03</b><h3>Understand the result</h3><p>See totals, interest, tax and assumptions — not just one big number.</p></div></div></section>
-  <footer><div><a className="brand" href="#">FinCalc</a><p>A practical finance calculator for people, households and businesses.</p></div><div><b>Explore</b><a href="/Finance-Calculator/calculators">All calculators</a><a href="#countries">Countries</a><a href="#taxes">Tax tools</a></div><div><b>Important</b><p>Calculations are estimates and educational tools, not financial, tax or legal advice.</p></div></footer>
+  <footer><div><a className="brand" href="/Finance-Calculator/">FinCalc</a><p>A practical finance calculator for people, households and businesses.</p></div><div><b>Explore</b><a href="/Finance-Calculator/calculators/">All calculators</a><a href="#countries">Countries</a><a href="#taxes">Tax tools</a></div><div><b>Important</b><p>Calculations are estimates and educational tools, not financial, tax or legal advice.</p></div></footer>
  </main>
 }
